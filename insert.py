@@ -51,7 +51,7 @@ def process_pdb(input_pdb, output_pdb):
                 current_resName = resName
 
                 # 如果resSeq从0开始，并且当前分子序号与之前的不同，则切换到下一个链编号
-                if resSeq == 0 and resSeq != current_resSeq:
+                if resSeq == 1 and resSeq != current_resSeq:
                     if current_resSeq != -1:  # 仅在不是第一个链时增加链编号
                         f.write(f"TER   {i+1:>5}      {current_resName} {chain_ids[current_chain_index]}\n")
                         current_chain_index += 1
@@ -74,7 +74,7 @@ def process_pdb(input_pdb, output_pdb):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process a PDB file and insert chain identifiers.")
-    #用法：python instert.py -f input.pdb -o output_with_chain.pdb
+    #用法：python insert.py -f input.pdb -o output_with_chain.pdb
     parser.add_argument("-f", "--file", required=True, help="Input PDB file")
     parser.add_argument("-o", "--output", required=True, help="Output PDB file with chain identifiers")
 
