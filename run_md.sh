@@ -40,7 +40,7 @@ run_md_background() {
     
     # 启动监控脚本
     chmod +x ../monitor_md.sh
-    nohup ../monitor_md.sh > monitor.out 2>&1 &
+    nohup ../monitor_md.sh >> monitor.log 2>&1 &
     
     cd ..
 }

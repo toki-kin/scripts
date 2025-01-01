@@ -11,20 +11,28 @@ GPU_IDS="0,1"
 
 cd "${SCRIPT_DIR}/md" || exit 1
 
+log_message() {
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "[${timestamp}] $1" >> monitor.log
+}
+
+log_message "监控脚本启动"
+
 while true; do
-    if ! pgrep -f "gmx_mpi.*mdrun" > /dev/null; then
+    current_time=$(date '+%Y-%m-%d %H:%M:%S')
+    if ! pgrep -f "gmx_mpi" > /dev/null; then
         LATEST_LOG=$(ls -t md.part*.log 2>/dev/null | head -n1)
         if [ -z "$LATEST_LOG" ]; then
-            echo "未找到log文件，等待..." >> monitor.log
+            log_message "[${current_time}] 未找到log文件，等待..."
             sleep 60
             continue
         fi
         
         if ! grep -q "Finished mdrun" "$LATEST_LOG"; then
-            echo "MD似乎异常终止,尝试重启..." >> monitor.log
-            nohup mpirun -np 2 $GMX_CMD mdrun -noappend -cpi md -v -deffnm md -s md.tpr -ntomp $NTOMP -pin on -pinoffset 0 -gpu_id $GPU_IDS > md.out 2>&1 &
+            log_message "[${current_time}] MD似乎异常终止,尝试重启..."
+            nohup mpirun -np 2 $GMX_CMD mdrun -noappend -cpi md -v -deffnm md -s md.tpr -ntomp $NTOMP -pin on -pinoffset 0 -gpu_id $GPU_IDS >> md.out 2>&1 &
         else
-            echo "MD已正常完成" >> monitor.log
+            log_message "[${current_time}] MD已正常完成"
             break
         fi
     fi
