@@ -36,7 +36,7 @@ run_md_background() {
     
     cp ../eq/eq.gro ./
     $GMX_CMD grompp -p topol.top -f md.mdp -c eq.gro -o md.tpr -maxwarn 1 || exit 1
-    nohup mpirun -np 2 $GMX_CMD mdrun -noappend -cpi md -v -deffnm md -s md.tpr -ntomp $NTOMP -pin on -pinoffset 0 -gpu_id $GPU_IDS > md.out 2>&1 &
+    nohup $GMX_CMD mdrun -ntmpi 2 -noappend -cpi md -v -deffnm md -s md.tpr -ntomp $((NTOMP/2)) -pin on -pinoffset 0 -gpu_id $GPU_IDS > md.out 2>&1 &
     
     # 启动监控脚本
     chmod +x ../monitor_md.sh

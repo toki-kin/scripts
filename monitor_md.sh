@@ -30,7 +30,7 @@ while true; do
         
         if ! grep -q "Finished mdrun" "$LATEST_LOG"; then
             log_message "[${current_time}] MD似乎异常终止,尝试重启..."
-            nohup mpirun -np 2 $GMX_CMD mdrun -noappend -cpi md -v -deffnm md -s md.tpr -ntomp $NTOMP -pin on -pinoffset 0 -gpu_id $GPU_IDS >> md.out 2>&1 &
+               nohup $GMX_CMD mdrun -ntmpi 2 -noappend -cpi md -v -deffnm md -s md.tpr -ntomp $((NTOMP/2)) -pin on -pinoffset 0 -gpu_id $GPU_IDS > md.out 2>&1 &
         else
             log_message "[${current_time}] MD已正常完成"
             break
